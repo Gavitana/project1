@@ -1,0 +1,15 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Error
+
+   
+{% endblock %}
+
+{% block body %}
+ 
+ <h3>Change name of the entry(already have that one)<h3> 
+<div>
+<a href = '{% url "encyclopedia:add"%}'> Create New Page</a>
+</div>
+{% endblock %}
