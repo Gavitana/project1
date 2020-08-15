@@ -6,10 +6,13 @@ from django.urls import reverse
 from django.core.files.storage import default_storage
 from django.shortcuts import redirect
 import random
+from .models import Person
 
 class NewEntryForm(forms.Form):
 	entry = forms.CharField(label = "Name of entry")
 	comment= forms.CharField(widget=forms.Textarea(attrs={"rows":1, "cols":1}),label = "Entry Text")
+class NewEditForm(forms.Form):
+	edit = forms.CharField(widget=forms.Textarea(attrs={"rows":1, "cols":1}),label = "Edit Text")
 
 def index(request):
 	return render(request, "encyclopedia/index.html", {
@@ -53,30 +56,31 @@ def add(request):
 		"form":NewEntryForm()
 	})
 
-
-
 def edit(request, title):
+	f = default_storage.open(f"entries/{title}.md")
+	x = f.read().decode("utf-8")
+	content=x
 	if request.method == "GET":
-		f = default_storage.open(f"entries/{title}.md")
-		x = f.read().decode("utf-8")
 		return render(request, "encyclopedia/edit.html",{
-			"content":x,
+			"content":content,
 			"title":title
 		})
-
 	if request.method == "POST":
-		form = NewEntryForm(request.POST)
+		form = NewEditForm(request.POST)
 		if form.is_valid():
-			entry = form.cleaned_data["entry"]
-			comment = form.cleaned_data["comment"]
-			util.save_entry(title, content)
-			return render (request, "encyclopedia/page.html",{
-				"title":title,
-				"content":content
-			})
-
+			edit = form.cleaned_data["comment"]
+			util.save_entry(title,edit)
+			return render (request, "encyclopedia/edit.html", {
+				"form":form
+		}
+					   )
 
 def random_page(request):
 	entries = util.list_entries()
 	selected_page = random.choice(entries)
 	return redirect('encyclopedia:page', title=selected_page)
+
+def persona(request):
+	return render(request, "encyclopedia/persons.html",{
+		"persons":Person.objects.all()
+	})

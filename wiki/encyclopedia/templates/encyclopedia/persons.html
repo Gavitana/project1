@@ -1,0 +1,16 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Persons
+{% endblock %}
+
+{% block body %}
+    <h1>All Persons</h1>
+
+    <ul>
+        {% for person in persons %}
+            <li>Person {{ person }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

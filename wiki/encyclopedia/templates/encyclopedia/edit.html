@@ -7,15 +7,12 @@
 {% endblock %}
 
 {% block body %}
-
-<form action = "{%url 'encyclopedia:edit' content%}" method="POST">
-    {%csrf_token%}
-    <textarea>
-        {{title}}
-    </textarea>
-    <textarea>
-        {{content}}
-    </textarea>
-    <input type="submit" name="Save changes">
+<form action="{% url 'encyclopedia:edit' title%}" method ='post' >
+{%csrf_token%}
+  <p><textarea name="comment">{{content}}</textarea></p>
+  <p>
+    <input type="submit" value="Edit">
+  </p>
+{{form}}
 </form>
 {% endblock %}
