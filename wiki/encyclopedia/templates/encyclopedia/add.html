@@ -12,7 +12,8 @@
     <form  id = "newform" action = "{% url 'encyclopedia:add'%}" method = "post"  >
     	<input type="submit" value="Add new entry">
     {%csrf_token%}
-    {{form}}
+
+        {{form}}
     
 </form>
     {% endblock %}

@@ -9,10 +9,13 @@
 {% block body %}
 <form action="{% url 'encyclopedia:edit' title%}" method ='post' >
 {%csrf_token%}
-  <p><textarea name="comment">{{content}}</textarea></p>
+    <p>Change name of Entry:</p>
+    <p><textarea rows="1" cols="50" name="Name of Entry">{{title}}</textarea></p>
+  <p><textarea rows="10" cols="150" name="comment">{{content}}</textarea></p>
   <p>
     <input type="submit" value="Edit">
   </p>
-{{form}}
+    {{form}}
 </form>
+
 {% endblock %}

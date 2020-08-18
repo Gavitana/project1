@@ -10,9 +10,8 @@ from .models import Person
 
 class NewEntryForm(forms.Form):
 	entry = forms.CharField(label = "Name of entry")
-	comment= forms.CharField(widget=forms.Textarea(attrs={"rows":1, "cols":1}),label = "Entry Text")
-class NewEditForm(forms.Form):
-	edit = forms.CharField(widget=forms.Textarea(attrs={"rows":1, "cols":1}),label = "Edit Text")
+	comment= forms.CharField(widget=forms.Textarea(attrs={"rows":10, "cols":150}),label = "Entry Text")
+
 
 def index(request):
 	return render(request, "encyclopedia/index.html", {
@@ -26,16 +25,17 @@ def page(request,title):
 		})
 
 def search(request):
-    if request.method == "POST":
-        query = request.POST['q']
-        entries = util.list_entries()
-        if query in entries:
-            return render(request, "encyclopedia/search_result.html", {
-                "title": util.get_entry(query),
-                "title_page": query
-                })
-        else:
-            return render(request, "encyclopedia/Pagenotfound.html")
+	if request.method == "POST":
+		query = request.POST['q']
+		entries = util.list_entries()
+		for entry in entries:
+			if query in entry:
+				return render(request, "encyclopedia/search_result.html", {
+                "title": entries,
+                "title_page":entry
+                	})
+			else:
+				return render(request, "encyclopedia/Pagenotfound.html")
 
 def add(request):
 	if request.method == "POST":
@@ -59,21 +59,19 @@ def add(request):
 def edit(request, title):
 	f = default_storage.open(f"entries/{title}.md")
 	x = f.read().decode("utf-8")
-	content=x
+
 	if request.method == "GET":
 		return render(request, "encyclopedia/edit.html",{
-			"content":content,
+			"content":x,
 			"title":title
 		})
+
+
+	title = request.POST['Name of Entry']
+	content = request.POST['comment']
 	if request.method == "POST":
-		form = NewEditForm(request.POST)
-		if form.is_valid():
-			edit = form.cleaned_data["comment"]
-			util.save_entry(title,edit)
-			return render (request, "encyclopedia/edit.html", {
-				"form":form
-		}
-					   )
+		util.save_entry(title, content)
+		return redirect('encyclopedia:page', title=title)
 
 def random_page(request):
 	entries = util.list_entries()
