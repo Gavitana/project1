@@ -28,14 +28,12 @@ def search(request):
 	if request.method == "POST":
 		query = request.POST['q']
 		entries = util.list_entries()
-		for entry in entries:
-			if query in entry:
-				return render(request, "encyclopedia/search_result.html", {
-                "title": entries,
-                "title_page":entry
+		matches = [match for match in entries if query in match]
+		return render(request, "encyclopedia/search_result.html", {
+                "title_page":matches
                 	})
-			else:
-				return render(request, "encyclopedia/Pagenotfound.html")
+	else:
+		return render(request, "encyclopedia/Pagenotfound.html")
 
 def add(request):
 	if request.method == "POST":
